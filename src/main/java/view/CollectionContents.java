@@ -1,0 +1,245 @@
+package view;
+
+import dao.ColeccionesDAO;
+import dao.LibroDAO;
+import entity.Colecciones;
+import entity.Libro;
+import exceptions.DBException;
+
+import javax.swing.*;
+import javax.swing.border.LineBorder;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+
+public class CollectionContents extends JFrame {
+    //Constants
+    private final Font FONT_STATS_NAME = new Font("SansSerif",Font.PLAIN,14);
+    private final Font FONT_STATS_VALUE = new Font("SansSerif",Font.BOLD,22);
+    private final Font FONT_TITLE = new  Font("SansSerif",Font.PLAIN,24);
+
+    private final Color COLOR_STATS_NAME = new Color(90, 90, 100);
+    private final Color COLOR_STATS_VALUE = new Color(30, 30, 40);
+    private final Color COLOR_COLLECTION_TITLE = new Color(200, 30, 100);
+
+    private final Color STAT_CARDS_BG = new Color(253, 235, 240);
+    private final Color STAT_CARDS_BORDER = new Color(240, 200, 215);
+
+    private final Color DATA_BG = new Color(255, 255, 255);
+    private final Color DATA_BORDER = new Color(139, 126, 174, 174);
+
+    private final Color MAIN_BG = new Color(248, 238, 240);
+
+    //Extras
+    VentanaPrincipal origen;
+
+    //Parametros
+    private String tittleString;
+    private String author;
+    private String counterTotalVolumes;
+    private String counterOwned;
+    private String counterCollectionStatus;
+    private String counterPublicationStatus;
+
+    //JLabels - Text
+    private JLabel lbCollectionTittle = new JLabel();
+    private JLabel lbTotalVolumes = new JLabel("Total Volumes",JLabel.LEFT);
+    private JLabel lbOwned = new JLabel("Owned",JLabel.LEFT);
+    private JLabel lbCollectionStatus = new JLabel("Collection Status",JLabel.LEFT);
+    private JLabel lbPublicationStatus = new JLabel("Publication Status",JLabel.LEFT);
+
+    //JLabel - Counters
+    private JLabel lbCounterTotalVolumes = new JLabel();
+    private JLabel lbCounterOwned = new JLabel();
+    private JLabel lbCounterCollectionStatus = new JLabel();
+    private JLabel lbCounterPublicationStatus = new JLabel();
+
+    //JPanels
+    private JPanel pData = new JPanel(new GridBagLayout());
+    private JPanel pCounters = new JPanel(new GridLayout(1,4,10,10));
+    private JPanel pVolumeCounter = new JPanel(new GridBagLayout());
+    private JPanel pOwnedCounter = new JPanel(new GridBagLayout());
+    private JPanel pCollectionCounter = new JPanel(new GridBagLayout());
+    private JPanel pPublicationCounter = new JPanel(new GridBagLayout());
+
+    //Panel - Data GridBagConstraint
+    private GridBagConstraints gbcData = new GridBagConstraints();
+
+    //Panel - Counter Grid Bag Constrains
+    private GridBagConstraints gbcCounter = new GridBagConstraints();
+
+    public CollectionContents(String tittleString, String author, String counterTotalVolumes, String counterOwned, String counterCollectionStatus, String counterPublicationStatus) throws DBException{
+        this.tittleString = tittleString;
+        this.author = author;
+        this.counterTotalVolumes = counterTotalVolumes;
+        this.counterOwned = counterOwned;
+        this.counterCollectionStatus = counterCollectionStatus;
+        this.counterPublicationStatus = counterPublicationStatus;
+        innit(this.tittleString, this.author,this.counterTotalVolumes,this.counterOwned,this.counterCollectionStatus,this.counterPublicationStatus);
+    }
+
+    public void innit(String tittleString, String author, String counterTotalVolumes, String counterOwned, String counterCollectionStatus, String counterPublicationStatus) throws DBException {
+        this.setTitle("Collection: " + tittleString + " - " + author);
+        this.setSize(918,468);
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        this.setLocationRelativeTo(null);
+        this.setLayout(new GridBagLayout());
+        this.setResizable(false);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10,10,10,10);
+        gbc.gridx = 0;
+        gbc.gridy  = 0;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+
+        //Counters
+        gbcCounter.insets = new Insets(4,4,4,4);
+        gbcCounter.gridx = 0;
+        gbcCounter.gridy  = 0;
+
+
+        //Counter - Total Volumes
+        this.lbTotalVolumes.setFont(FONT_STATS_NAME);
+        this.lbTotalVolumes.setForeground(COLOR_STATS_NAME);
+        this.pVolumeCounter.add(this.lbTotalVolumes,gbcData);
+
+        gbcCounter.gridx = 0;
+        gbcCounter.gridy = 1;
+        this.lbCounterTotalVolumes.setText(counterTotalVolumes);
+        this.lbCounterTotalVolumes.setFont(FONT_STATS_VALUE);
+        this.lbCounterTotalVolumes.setForeground(COLOR_STATS_VALUE);
+        this.pVolumeCounter.add(lbCounterTotalVolumes,gbcCounter);
+
+        //Counter - Owned
+        gbcCounter.gridx = 0;
+        gbcCounter.gridy = 0;
+        this.lbOwned.setFont(FONT_STATS_NAME);
+        this.lbOwned.setForeground(COLOR_STATS_NAME);
+        this.pOwnedCounter.add(this.lbOwned,gbcCounter);
+
+        gbcCounter.gridx = 0;
+        gbcCounter.gridy = 1;
+        this.lbCounterOwned.setText(counterOwned);
+        this.lbCounterOwned.setFont(FONT_STATS_VALUE);
+        this.lbCounterOwned.setForeground(COLOR_STATS_VALUE);
+        this.pOwnedCounter.add(lbCounterOwned,gbcCounter);
+
+        //Counter - Collection Status
+        gbcCounter.gridx = 0;
+        gbcCounter.gridy = 0;
+        this.lbCollectionStatus.setFont(FONT_STATS_NAME);
+        this.lbCollectionStatus.setForeground(COLOR_STATS_NAME);
+        this.pCollectionCounter.add(this.lbCollectionStatus,gbcCounter);
+
+        gbcCounter.gridx = 0;
+        gbcCounter.gridy = 1;
+        this.lbCounterCollectionStatus.setText(counterCollectionStatus);
+        this.lbCounterCollectionStatus.setFont(FONT_STATS_VALUE);
+        this.lbCounterCollectionStatus.setForeground(COLOR_STATS_VALUE);
+        this.pCollectionCounter.add(this.lbCounterCollectionStatus,gbcCounter);
+
+        //Counter - Publication Status
+        gbcCounter.gridx = 0;
+        gbcCounter.gridy = 0;
+        this.lbPublicationStatus.setFont(FONT_STATS_NAME);
+        this.lbPublicationStatus.setForeground(COLOR_STATS_NAME);
+        this.pPublicationCounter.add(lbPublicationStatus,gbcCounter);
+
+        gbcCounter.gridx = 0;
+        gbcCounter.gridy = 1;
+        this.lbCounterPublicationStatus.setText(counterPublicationStatus);
+        this.lbCounterPublicationStatus.setFont(FONT_STATS_VALUE);
+        this.lbCounterPublicationStatus.setForeground(COLOR_STATS_VALUE);
+        this.pPublicationCounter.add(this.lbCounterPublicationStatus,gbcCounter);
+
+        //Counters Panel
+        this.pCounters.setBackground(DATA_BG);
+        this.pVolumeCounter.setBorder(new LineBorder(STAT_CARDS_BORDER,1));
+        this.pVolumeCounter.setBackground(STAT_CARDS_BG);
+        this.pCounters.add(pVolumeCounter);
+
+        this.pOwnedCounter.setBorder(new LineBorder(STAT_CARDS_BORDER,1));
+        this.pOwnedCounter.setBackground(STAT_CARDS_BG);
+        this.pCounters.add(this.pOwnedCounter);
+
+        this.pCollectionCounter.setBorder(new LineBorder(STAT_CARDS_BORDER,1));
+        this.pCollectionCounter.setBackground(STAT_CARDS_BG);
+        this.pCounters.add(pCollectionCounter);
+
+        this.pPublicationCounter.setBorder(new LineBorder(STAT_CARDS_BORDER,1));
+        this.pPublicationCounter.setBackground(STAT_CARDS_BG);
+        this.pCounters.add(this.pPublicationCounter);
+
+
+
+        //Data Panel
+        gbcData.insets = new Insets(7,7,7,7);
+        gbcData.gridx = 0;
+        gbcData.gridy  = 0;
+        gbcData.weightx = 1.0;
+        gbcData.weighty = 1.0;
+        gbcData.fill = GridBagConstraints.BOTH;
+
+        this.lbCollectionTittle.setText(tittleString);
+        this.lbCollectionTittle.setFont(FONT_TITLE);
+        this.lbCollectionTittle.setForeground(COLOR_COLLECTION_TITLE);
+        this.pData.add(this.lbCollectionTittle, gbcData);
+
+        gbcData.gridy  = 1;
+        this.pData.add(this.pCounters, gbcData);
+
+        this.pData.setBorder(new LineBorder(DATA_BORDER,2));
+        this.pData.setBackground(DATA_BG);
+
+        //Main Frame
+        JScrollPane scrollPane = new JScrollPane(bookTable(ColeccionesDAO.obtenerId(this.tittleString)));
+        this.getContentPane().setBackground(MAIN_BG);
+        this.add(pData,gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        this.add(scrollPane,gbc);
+
+
+        this.setVisible(true);
+
+    }
+
+    public JTable bookTable(int id) throws DBException {
+
+        final int POSITION_VOL = 0;
+        final int POSITION_EDITORIAL = 1;
+        final int POSITION_LANGUAGE = 2;
+        final int POSITION_STATUS = 3;
+        final int POSITION_COLLECTION = 4;
+
+        String[] column = {"Vol #","Editorial","Language","Status","Collection"};
+        Object[][] data = new Object[LibroDAO.listarLibros().size()][5];
+        for (int i = 0; i < data.length; i++) {
+            Libro[] listadoDeColecciones = LibroDAO.listBooksByCollection(id).toArray(new Libro[LibroDAO.listBooksByCollection(id).size()]);
+            data[i][POSITION_VOL] = listadoDeColecciones[i].getNumeroVolumen();
+            data[i][POSITION_EDITORIAL] = listadoDeColecciones[i].getEditorial();
+            data[i][POSITION_LANGUAGE] = listadoDeColecciones[i].getLenguaje();
+            data[i][POSITION_STATUS] = listadoDeColecciones[i].getEstadoLibro();
+            data[i][POSITION_COLLECTION] = listadoDeColecciones[i].getColeccion();
+
+
+        }
+
+        DefaultTableModel model = new DefaultTableModel(data,column){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        JTable tblBooks = new JTable();
+        tblBooks.setModel(model);
+        tblBooks.setCellSelectionEnabled(false);
+        tblBooks.setRowSelectionAllowed(true);
+        tblBooks.setFont(new Font("SansSerif",Font.PLAIN,14));
+
+
+        return tblBooks;
+
+    }
+}
