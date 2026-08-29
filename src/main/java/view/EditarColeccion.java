@@ -9,19 +9,22 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class EditarColeccion extends JFrame {
+/**
+ * Class which object is a GUI that allows the user to edit the info of a collection
+ */
+public class EditarColeccion extends JDialog {
 
     //Origen
     private VentanaPrincipal origen;
 
     //JLabels
-    private JLabel lbTitulo = new JLabel("Editar Libro",JLabel.CENTER);
-    private JLabel lbTituloColeccion = new JLabel("Titulo: ",JLabel.CENTER);
-    private JLabel lbNombreAutor = new JLabel("Autor: ",JLabel.CENTER);
-    private JLabel lbTotalVolumenes = new JLabel("Total Volumen: ",JLabel.CENTER);
-    private JLabel lbTotalPoseidos = new JLabel("Total Poseidos: ",JLabel.CENTER);
-    private JLabel lbEstadoColeccion = new JLabel("Estado Coleccion: ",JLabel.CENTER);
-    private JLabel lbEstadoPublicacion = new JLabel("Estado Publicacion: ",JLabel.CENTER);
+    private JLabel lbTitulo = new JLabel("Editar Libro", JLabel.CENTER);
+    private JLabel lbTituloColeccion = new JLabel("Titulo: ", JLabel.CENTER);
+    private JLabel lbNombreAutor = new JLabel("Autor: ", JLabel.CENTER);
+    private JLabel lbTotalVolumenes = new JLabel("Total Volumen: ", JLabel.CENTER);
+    private JLabel lbTotalPoseidos = new JLabel("Total Poseidos: ", JLabel.CENTER);
+    private JLabel lbEstadoColeccion = new JLabel("Estado Coleccion: ", JLabel.CENTER);
+    private JLabel lbEstadoPublicacion = new JLabel("Estado Publicacion: ", JLabel.CENTER);
 
     //JButtons
     private JButton btnSave = new JButton("Save");
@@ -33,43 +36,44 @@ public class EditarColeccion extends JFrame {
     private JTextField tfTotalPoseidos = new JTextField(20);
 
     //JComboBox
-    private JComboBox<String> cbTituloColeccion = new JComboBox<String>(ColeccionesDAO.listarNombreColecciones().toArray(new String[ColeccionesDAO.listarNombreColecciones().size()]));
+    private JComboBox<Colecciones> cbTituloColeccion = new JComboBox<Colecciones>(ColeccionesDAO.listarColecciones().toArray(new Colecciones[ColeccionesDAO.listarColecciones().size()]));
     private JComboBox<String> cbEstadoColeccion = new JComboBox<String>(new String[]{"stopped", "finished", "onreading"});
     private JComboBox<String> cbEstadoPublicacion = new JComboBox<String>(new String[]{"cancelado", "terminado", "hiatus", "ongoing"});
 
     //JPanels
     private JPanel pTitulo = new JPanel(new FlowLayout(FlowLayout.CENTER));
-    private JPanel pTituloColeccion = new JPanel(new GridLayout(1,2,10,10));
-    private JPanel pNombreAutor = new JPanel(new GridLayout(1,2,10,10));
-    private JPanel pTotalVolumenes = new JPanel(new GridLayout(1,2,10,10));
-    private JPanel pTotalPoseidos = new JPanel(new GridLayout(1,2,10,10));
-    private JPanel pEstadoColeccion = new JPanel(new GridLayout(1,2,10,10));
-    private JPanel pEstadoPublicacion = new JPanel(new GridLayout(1,2,10,10));
-    private JPanel pBotonera = new JPanel(new GridLayout(1,2,10,10));
+    private JPanel pTituloColeccion = new JPanel(new GridLayout(1, 2, 10, 10));
+    private JPanel pNombreAutor = new JPanel(new GridLayout(1, 2, 10, 10));
+    private JPanel pTotalVolumenes = new JPanel(new GridLayout(1, 2, 10, 10));
+    private JPanel pTotalPoseidos = new JPanel(new GridLayout(1, 2, 10, 10));
+    private JPanel pEstadoColeccion = new JPanel(new GridLayout(1, 2, 10, 10));
+    private JPanel pEstadoPublicacion = new JPanel(new GridLayout(1, 2, 10, 10));
+    private JPanel pBotonera = new JPanel(new GridLayout(1, 2, 10, 10));
 
 
     /**
-     * Constructor of the EditarColeccion class
+     * Constructor of the class
      *
      * @param origen - Main GUI of the app
      * @throws DBException - Error related to anything that has to do with the DB
      */
-    public EditarColeccion(VentanaPrincipal origen) throws DBException {
+    public EditarColeccion(VentanaPrincipal origen)throws DBException{
+        super(origen,true);
         this.origen = origen;
         inicializar();
     }
 
     /**
-     * Method that initialices the Edit GUI
+     * Method that initializes the Edit GUI
      */
     public void inicializar(){
         this.setTitle("BaekoBeta: Editar Coleccion");
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        this.setLayout(new GridLayout(8,1,10,10));
+        this.setLayout(new GridLayout(8, 1, 10, 10));
         this.setLocationRelativeTo(null);
 
         //Titulo
-        lbTitulo.setFont(new Font("arial",Font.BOLD,20));
+        lbTitulo.setFont(new Font("arial", Font.BOLD, 20));
         this.pTitulo.add(lbTitulo);
         this.add(pTitulo);
 
@@ -108,27 +112,25 @@ public class EditarColeccion extends JFrame {
         this.pEstadoPublicacion.add(this.cbEstadoPublicacion);
         this.add(this.pEstadoPublicacion);
 
-        this.setVisible(true);
-
         cbTituloColeccion.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                try {
-                    Colecciones coleccion = ColeccionesDAO.obtenerColeccion(ColeccionesDAO.obtenerId(cbTituloColeccion.getSelectedItem().toString()));
+
+                Colecciones coleccion = (Colecciones) cbTituloColeccion.getSelectedItem();
+                if (coleccion != null) {
                     tfNombreAutor.setText(coleccion.getAutor());
                     tfTotalVolumenes.setText(Integer.toString(coleccion.getTotalVolumenes()));
                     tfTotalPoseidos.setText(Integer.toString(coleccion.getTotalPoseidos()));
                     cbEstadoColeccion.setSelectedItem(coleccion.getEstadoColeccion());
                     cbEstadoPublicacion.setSelectedItem(coleccion.getEstadoublicacion());
 
-                    tfTotalPoseidos.setEditable(true);
+                    tfTotalPoseidos.setEditable(false);
                     tfTotalVolumenes.setEditable(true);
                     cbEstadoColeccion.setEditable(true);
                     cbEstadoPublicacion.setEditable(true);
-
-                } catch (DBException e) {
-                    JOptionPane.showMessageDialog(EditarColeccion.this,"Error","Error al obtener la lista de colecciones",JOptionPane.ERROR_MESSAGE);
                 }
+
+
             }
         });
 
@@ -136,9 +138,13 @@ public class EditarColeccion extends JFrame {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
-                    ColeccionesDAO.editarColeccion(cbTituloColeccion.getSelectedItem().toString(),tfNombreAutor.getText(),Integer.parseInt(tfTotalVolumenes.getText()),Integer.parseInt(tfTotalPoseidos.getText()),cbEstadoColeccion.getSelectedItem().toString(),cbEstadoPublicacion.getSelectedItem().toString(),ColeccionesDAO.obtenerId(cbTituloColeccion.getSelectedItem().toString()));
+                    Colecciones collection = (Colecciones) cbTituloColeccion.getSelectedItem();
+                    if(cbTituloColeccion != null && cbEstadoColeccion != null && collection != null) {
+                        ColeccionesDAO.editarColeccion(cbTituloColeccion.getSelectedItem().toString(), tfNombreAutor.getText(), Integer.parseInt(tfTotalVolumenes.getText()), Integer.parseInt(tfTotalPoseidos.getText()), cbEstadoColeccion.getSelectedItem().toString(), cbEstadoPublicacion.getSelectedItem().toString(), collection.getIdCollection());
+                        dispose();
+                    }
                 } catch (DBException e) {
-                    JOptionPane.showMessageDialog(EditarColeccion.this,"Error","Error al editar la coleccion",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(origen,"Message: " + e.getMessage(),"BeakoBeta: Error",JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -150,6 +156,7 @@ public class EditarColeccion extends JFrame {
             }
         });
 
+        this.setVisible(true);
 
 
 

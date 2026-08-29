@@ -11,7 +11,10 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class CrearColeccion extends JFrame {
+/**
+ * Class which object is a GUI that allows the user to create collections
+ */
+public class CrearColeccion extends JDialog {
     //Extras
     private VentanaPrincipal origen;
 
@@ -46,38 +49,20 @@ public class CrearColeccion extends JFrame {
     private JPanel pBotones = new JPanel(new GridLayout(1,2,10,10));
 
     /**
-     * Test main class
-     */
-    public static void main(){
-        try {
-            CrearColeccion c = new CrearColeccion();
-        } catch (DBException e) {
-            System.out.println("Error");
-        }
-    }
-
-    /**
-     * Test Constructor of the class
-     * @throws DBException
-     */
-    public CrearColeccion() throws DBException {
-        inicializar();
-    }
-
-    /**
-     * Constructor of theclass
+     * Constructor of the class
      * @param origen - Main GUI of the app
-     * @throws DBException - Exception of anything related to the DB
+     * @throws DBException - Exception related to the DataBase
      */
     public CrearColeccion(VentanaPrincipal origen) throws DBException {
+        super(origen,true);
         this.origen = origen;
-        inicializar();
+        innit();
     }
 
     /**
-     * Method that initialices the Creation GUI
+     * Method that initializes the Creation GUI
      */
-    private void inicializar(){
+    private void innit(){
         this.setTitle("BeakoBeta: Crear Libro");
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setLayout(new GridLayout(7,1,5,20));
@@ -120,17 +105,15 @@ public class CrearColeccion extends JFrame {
 
         this.setSize(521,556);
         this.setResizable(false);
-        this.setVisible(true);
-
 
         btnCreate.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
                     ColeccionesDAO.insertarColeccion(new Colecciones(tfTitulo.getText(),tfAutor.getText(),Integer.parseInt(tfTotalVolumen.getText()),0,cbEstadoCol.getSelectedItem().toString(),cbEstadoPubli.getSelectedItem().toString()));
-
+                    dispose();
                 } catch (DBException e) {
-                    JOptionPane.showMessageDialog(CrearColeccion.this,"Error al ejecutar orden sql","Error:Beako Beta",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(CrearColeccion.this,"Message: " + e.getMessage(),"BeakoBeta: Error",JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -141,5 +124,11 @@ public class CrearColeccion extends JFrame {
                 CrearColeccion.this.dispose();
             }
         });
+
+
+        this.setVisible(true);
+
+
+
     }
 }

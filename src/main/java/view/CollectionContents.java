@@ -11,7 +11,10 @@ import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
-public class CollectionContents extends JFrame {
+/**
+ * Class which object is a GUI that portraits then info of the selected collection
+ */
+public class CollectionContents extends JDialog {
     //Constants
     private final Font FONT_STATS_NAME = new Font("SansSerif",Font.PLAIN,14);
     private final Font FONT_STATS_VALUE = new Font("SansSerif",Font.BOLD,22);
@@ -30,9 +33,10 @@ public class CollectionContents extends JFrame {
     private final Color MAIN_BG = new Color(248, 238, 240);
 
     //Extras
-    VentanaPrincipal origen;
+    private VentanaPrincipal origen;
 
     //Parametros
+    private int collectionId;
     private String tittleString;
     private String author;
     private String counterTotalVolumes;
@@ -67,7 +71,21 @@ public class CollectionContents extends JFrame {
     //Panel - Counter Grid Bag Constrains
     private GridBagConstraints gbcCounter = new GridBagConstraints();
 
-    public CollectionContents(String tittleString, String author, String counterTotalVolumes, String counterOwned, String counterCollectionStatus, String counterPublicationStatus) throws DBException{
+    /**
+     * Constructor of the CollectionContents GUI
+     * @param collectionId - Id of the collection
+     * @param tittleString - Tittle of the collection
+     * @param author - Author of the collection
+     * @param counterTotalVolumes - Total volumes of the collection
+     * @param counterOwned - Owned books of the collection
+     * @param counterCollectionStatus - State of the collection regarding the user
+     * @param counterPublicationStatus - State of the collection regarding publishing
+     * @throws DBException - Exception related to the DataBase
+     */
+    public CollectionContents(VentanaPrincipal origen,int collectionId, String tittleString, String author, String counterTotalVolumes, String counterOwned, String counterCollectionStatus, String counterPublicationStatus) throws DBException{
+        super(origen,true);
+        this.origen = origen;
+        this.collectionId = collectionId;
         this.tittleString = tittleString;
         this.author = author;
         this.counterTotalVolumes = counterTotalVolumes;
@@ -77,6 +95,16 @@ public class CollectionContents extends JFrame {
         innit(this.tittleString, this.author,this.counterTotalVolumes,this.counterOwned,this.counterCollectionStatus,this.counterPublicationStatus);
     }
 
+    /**
+     * Initialization method of the UI
+     * @param tittleString - Tittle of the collection
+     * @param author - Author of the collection
+     * @param counterTotalVolumes - Total volumes of the collection
+     * @param counterOwned - Owned books of the collection
+     * @param counterCollectionStatus - State of the collection regarding the user
+     * @param counterPublicationStatus - State of the collection regarding publishing
+     * @throws DBException - Exception related to the DataBase
+     */
     public void innit(String tittleString, String author, String counterTotalVolumes, String counterOwned, String counterCollectionStatus, String counterPublicationStatus) throws DBException {
         this.setTitle("Collection: " + tittleString + " - " + author);
         this.setSize(918,468);
@@ -193,7 +221,7 @@ public class CollectionContents extends JFrame {
         this.pData.setBackground(DATA_BG);
 
         //Main Frame
-        JScrollPane scrollPane = new JScrollPane(bookTable(ColeccionesDAO.obtenerId(this.tittleString)));
+        JScrollPane scrollPane = new JScrollPane(bookTable(this.collectionId));
         this.getContentPane().setBackground(MAIN_BG);
         this.add(pData,gbc);
         gbc.gridx = 0;
@@ -205,18 +233,25 @@ public class CollectionContents extends JFrame {
 
     }
 
+    /**
+     * Method that creates a table of the books that are from the collection
+     * @param id - Identification of the collection
+     * @return tblBooks - JTable with every data of the booksthat belong to this collection
+     * @throws DBException - Exception related to the DataBase
+     */
     public JTable bookTable(int id) throws DBException {
+        final int POSITION_ID = 0;
+        final int POSITION_VOL = 1;
+        final int POSITION_EDITORIAL = 2;
+        final int POSITION_LANGUAGE = 3;
+        final int POSITION_STATUS = 4;
+        final int POSITION_COLLECTION = 5;
 
-        final int POSITION_VOL = 0;
-        final int POSITION_EDITORIAL = 1;
-        final int POSITION_LANGUAGE = 2;
-        final int POSITION_STATUS = 3;
-        final int POSITION_COLLECTION = 4;
-
-        String[] column = {"Vol #","Editorial","Language","Status","Collection"};
-        Object[][] data = new Object[LibroDAO.listarLibros().size()][5];
+        String[] column = {"ID","Vol #","Editorial","Language","Status","Collection"};
+        Object[][] data = new Object[LibroDAO.listBooksByCollection(id).size()][6];
         for (int i = 0; i < data.length; i++) {
             Libro[] listadoDeColecciones = LibroDAO.listBooksByCollection(id).toArray(new Libro[LibroDAO.listBooksByCollection(id).size()]);
+            data[i][POSITION_ID] = listadoDeColecciones[i].getIdBook();
             data[i][POSITION_VOL] = listadoDeColecciones[i].getNumeroVolumen();
             data[i][POSITION_EDITORIAL] = listadoDeColecciones[i].getEditorial();
             data[i][POSITION_LANGUAGE] = listadoDeColecciones[i].getLenguaje();

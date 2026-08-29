@@ -12,9 +12,9 @@ import java.util.ArrayList;
 
 public class LibroDAO {
     /**
-     *
-     * @param l
-     * @throws DBException
+     * Adds new book to the Database
+     * @param l - Book that will be added
+     * @throws DBException - Exception that launchs when problems occurs while connecting to the database or when dealing with the PreparedStatement
      */
     public static void insertarLibro(Libro l) throws DBException{
 
@@ -35,8 +35,8 @@ public class LibroDAO {
             pS.execute();
 
 
-        } catch (Exception e) {
-            throw new DBException("Error: Error durante la insercion de libro en la coleccion");
+        } catch (SQLException e) {
+            throw new DBException("Message: " + e.getMessage() + "\nCode: " + e.getErrorCode());
         } finally {
             if(conn != null){
                 ConfigDB.closeDB(conn);
@@ -46,10 +46,10 @@ public class LibroDAO {
     }
 
     /**
-     *
-     * @param id
-     * @return
-     * @throws DBException
+     * Search for a book with the specified id
+     * @param id - Identifier of the book
+     * @return l - Book with the specified id
+     * @throws DBException - Exception that launchs when problems occurs while connecting to the database or when dealing with the PreparedStatement
      */
     public static Libro buscarLibro(int id) throws  DBException{
         Connection conn = null;
@@ -64,11 +64,11 @@ public class LibroDAO {
             pS.setInt(1,id);
             rS = pS.executeQuery();
             while(rS.next()){
-                l = new Libro(rS.getInt(2),rS.getString(3),rS.getString(4),rS.getString(5),rS.getInt(6));
+                l = new Libro(rS.getInt(1), rS.getInt(2),rS.getString(3),rS.getString(4),rS.getString(5),rS.getInt(6));
             }
             return l;
-        } catch (Exception e) {
-            throw new DBException("Error: Error durante la busqueda del libro ");
+        } catch (SQLException e) {
+            throw new DBException("Message: " + e.getMessage() + "\nCode: " + e.getErrorCode());
         }finally {
             if (conn != null) {
                 ConfigDB.closeDB(conn);
@@ -77,36 +77,47 @@ public class LibroDAO {
     }
 
     /**
-     * 
-     * @return
-     * @throws DBException
+     * Lists all that book that are from the same Id
+     * @param collectionId - Id of the collection from which the book iis from
+     * @return booksOfCollection - List of all of the book of the collection
+     * @throws DBException - Exception that launchs when problems occurs while connecting to the database or when dealing with the PreparedStatement
      */
-    public static ArrayList<Libro> listarLibros() throws  DBException{
+    public static ArrayList<Libro> listBooksByCollection(int collectionId) throws DBException{
         Connection conn = null;
         PreparedStatement pS = null;
-        ResultSet rS =  null;
-        ArrayList<Libro> listaLibros = new ArrayList<Libro>();
-        String sqlStatement = "SELECT *  FROM libros";
+        String sqlStatement = "SELECT * FROM libros WHERE coleccion = ?";
+        ResultSet rS = null;
+        ArrayList<Libro> booksOfCollection = new ArrayList<Libro>();
 
         try{
             conn = ConfigDB.openDB();
             pS = conn.prepareStatement(sqlStatement);
+            pS.setInt(1,collectionId);
             rS = pS.executeQuery();
             while(rS.next()){
-               listaLibros.add(new Libro(rS.getInt(2),rS.getString(3),rS.getString(4),rS.getString(5),rS.getInt(6)));
+                booksOfCollection.add(new Libro(rS.getInt(1), rS.getInt(2),rS.getString(3),rS.getString(4),rS.getString(5),rS.getInt(6)));
             }
-            return listaLibros;
-        } catch (Exception e) {
-            throw new DBException("Error: Error al copilar libros");
+            return booksOfCollection;
+        } catch (SQLException e) {
+            throw new DBException("Message: " + e.getMessage() + "\nCode: " + e.getErrorCode());
         }finally {
-            if (conn != null) {
+            if(conn != null){
                 ConfigDB.closeDB(conn);
             }
         }
-
     }
 
-    public static void editarLibros(int id, int numeroVolumen,String editorial,String lenguage, String estadoLibro, int coleccion) throws  DBException{
+    /**
+     * Edit the data of the books that have the id passed as a parameter
+     * @param id - Identifier of the book
+     * @param numeroVolumen - Number of the volume in that collection
+     * @param editorial - Editorial that publishes the book
+     * @param lenguage - Language in which the book is written only accepts three letters max (ENG-PT-ESP-JP)
+     * @param estadoLibro - Reading state of the book in the collection so if the user starts multiple books at the same time it can keep track on which are finished, started, or still hasnt started
+     * @param coleccion - Identifier of the collection from which the book is from
+     * @throws DBException - Exception that launchs when problems occurs while connecting to the database or when dealing with the PreparedStatement
+     */
+    public static void editarLibros(int id, int numeroVolumen, String editorial, String lenguage, String estadoLibro, int coleccion) throws  DBException{
         Connection conn = null;
         PreparedStatement pS = null;
         String sqlStatement = "UPDATE libros SET numerovolumen = ?, editorial = ?, lenguage = ?, estadolibro = ?, coleccion = ? WHERE id = ?";
@@ -121,8 +132,8 @@ public class LibroDAO {
             pS.setInt(5,coleccion);
             pS.setInt(6,id);
             pS.execute();
-        } catch (Exception e) {
-            throw new DBException("Error: Error durante la modificacion del libro ");
+        } catch (SQLException e) {
+            throw new DBException("Message: " + e.getMessage() + "\nCode: " + e.getErrorCode());
         }finally {
             if (conn != null) {
                 ConfigDB.closeDB(conn);
@@ -131,6 +142,11 @@ public class LibroDAO {
 
     }
 
+    /**
+     * Deletes the book that has the identifier
+     * @param id - Identifier of the book
+     * @throws DBException - Exception that launchs when problems occurs while connecting to the database or when dealing with the PreparedStatement
+     */
     public static void eliminarLibro(int id) throws DBException{
         Connection conn = null;
         PreparedStatement pS = null;
@@ -141,8 +157,8 @@ public class LibroDAO {
                     pS = conn.prepareStatement(sqlStatement);
                     pS.setInt(1,id);
                     pS.execute();
-                } catch (Exception e) {
-                    throw new DBException("Error al conectarse alabase de datos");
+                } catch (SQLException e) {
+                    throw new DBException("Message: " + e.getMessage() + "\nCode: " + e.getErrorCode());
                 }finally {
                     if(conn != null){
                         ConfigDB.closeDB(conn);
@@ -150,56 +166,4 @@ public class LibroDAO {
                 }
 
     }
-
-    public static int searchBookByVolume(int numVolume, int collection) throws DBException{
-        Connection conn = null;
-        PreparedStatement ps = null;
-        String sqlStatement = "SELECT id FROM libros WHERE numerovolumen = ? AND coleccion = ?";
-        ResultSet rs = null;
-
-        try{
-            conn = ConfigDB.openDB();
-            ps = conn.prepareStatement(sqlStatement);
-            ps.setInt(1,numVolume);
-            ps.setInt(2,collection);
-            rs = ps.executeQuery();
-            int bookId = -1;
-            while(rs.next()){
-                bookId = rs.getInt("id");
-            }
-            return bookId;
-        }catch (DBException | SQLException e){
-            throw new DBException(e.getMessage());
-        }finally {
-            if(conn != null){
-                ConfigDB.closeDB(conn);
-            }
-        }
-    }
-
-    public static ArrayList<Libro> listBooksByCollection(int collectionId) throws DBException{
-        Connection conn = null;
-        PreparedStatement pS = null;
-        String sqlStatement = "SELECT * FROM libros WHERE coleccion = ?";
-        ResultSet rS = null;
-        ArrayList<Libro> booksOfCollection = new ArrayList<Libro>();
-
-        try{
-            conn = ConfigDB.openDB();
-            pS = conn.prepareStatement(sqlStatement);
-            pS.setInt(1,collectionId);
-            rS = pS.executeQuery();
-            while(rS.next()){
-                booksOfCollection.add(new Libro(rS.getInt(2),rS.getString(3),rS.getString(4),rS.getString(5),rS.getInt(6)));
-            }
-            return booksOfCollection;
-        } catch (SQLException e) {
-            throw new DBException(e.getMessage());
-        }finally {
-            if(conn != null){
-                ConfigDB.closeDB(conn);
-            }
-        }
-    }
-
 }

@@ -2,6 +2,7 @@ package view;
 
 import dao.ColeccionesDAO;
 import dao.LibroDAO;
+import entity.Colecciones;
 import entity.Libro;
 import exceptions.DBException;
 
@@ -10,7 +11,10 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class CrearLibro extends JFrame {
+/**
+ * Class which object is a GUI that allows the user to create a book and add it to a collection
+ */
+public class CrearLibro extends JDialog {
     //Extras
     private VentanaPrincipal origen;
 
@@ -33,7 +37,7 @@ public class CrearLibro extends JFrame {
 
     //JComboBox
     private JComboBox<String> cbEstadoLibro = new JComboBox<String>(new String[]{"stopped", "finished", "onreading"});
-    private JComboBox<String> cbColeccion = new JComboBox<String>(ColeccionesDAO.listarNombreColecciones().toArray(new String[ColeccionesDAO.listarNombreColecciones().size()]));
+    JComboBox<Colecciones> cbColeccion = new JComboBox<Colecciones>(ColeccionesDAO.listarColecciones().toArray(new Colecciones[ColeccionesDAO.listarColecciones().size()]));
 
     //JPanel
     private JPanel pTitulo = new JPanel(new GridLayout(1,1,10,10));
@@ -45,38 +49,19 @@ public class CrearLibro extends JFrame {
     private JPanel pBotones = new JPanel(new GridLayout(1,2,10,10));
 
     /**
-     * Test Main class
-     */
-    public static void main(){
-        try {
-            CrearLibro c = new CrearLibro();
-        } catch (DBException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    /**
-     * Test Object Constructor
-     * @throws DBException
-     */
-    public CrearLibro() throws DBException {
-        inicializar();
-    }
-
-    /**
-     * Contructor of the CrearLibro class
+     * Constructor of the CrearLibro class
      * @param origen - Main GUI of the app
-     * @throws DBException -Exception to anything related to the DB
+     * @throws DBException - Exception related to the DataBase
      */
     public CrearLibro(VentanaPrincipal origen) throws DBException {
         this.origen = origen;
-        inicializar();
+        innit();
     }
 
     /**
-     * Method that initialices the creation GUI
+     * Method that initializes the creation GUI
      */
-    private void inicializar(){
+    private void innit() throws DBException{
         this.setTitle("BeakoBeta: Crear Libro");
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setLayout(new GridLayout(7,1,5,20));
@@ -125,11 +110,14 @@ public class CrearLibro extends JFrame {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
-                    Libro l = new Libro(Integer.parseInt(tfNumVolumen.getText()),tfEditorial.getText(),tfLenguaje.getText(),cbEstadoLibro.getSelectedItem().toString(),ColeccionesDAO.obtenerId(cbColeccion.getSelectedItem().toString()));
+                    Colecciones colection = (Colecciones) cbColeccion.getSelectedItem();
+                    Libro l = new Libro(Integer.parseInt(tfNumVolumen.getText()),tfEditorial.getText(),tfLenguaje.getText(),cbEstadoLibro.getSelectedItem().toString(),colection.getIdCollection());
                     LibroDAO.insertarLibro(l);
-                    ColeccionesDAO.incrementOwnedBooks(l.getColeccion());
+                    colection.setTotalPoseidos(colection.getTotalPoseidos()+1);
+                    ColeccionesDAO.editarColeccion(colection.getNombre(),colection.getAutor(),colection.getTotalVolumenes(),colection.getTotalPoseidos(),colection.getEstadoColeccion(),colection.getEstadoublicacion(),colection.getIdCollection());
+                    dispose();
                 } catch (DBException e) {
-                    JOptionPane.showMessageDialog(CrearLibro.this,"Error al ejecutar orden sql","Error:Beako Beta",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(CrearLibro.this,"Message: " + e.getMessage(),"BeakoBeta: Error",JOptionPane.ERROR_MESSAGE);
                 }
             }
         });

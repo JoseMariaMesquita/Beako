@@ -10,8 +10,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+
 public class ColeccionesDAO {
 
+    /**
+     * Adds a new collection to the database
+     * @param c - The collection that will be added
+     * @throws DBException - Exception that launchs when problems occurs while connecting to the database or when dealing with the PreparedStatement
+     */
     public static void insertarColeccion(Colecciones c) throws DBException{
 
         Connection conn = null;
@@ -30,7 +36,7 @@ public class ColeccionesDAO {
           pS.setString(6,c.getEstadoublicacion());
           pS.execute();
         } catch (SQLException e) {
-            throw new DBException("Error al insertar Coleccion");
+            throw new DBException("Message: " + e.getMessage() + "\nCode: " + e.getErrorCode());
         }finally {
             if (conn != null){
                 ConfigDB.closeDB(conn);
@@ -38,6 +44,11 @@ public class ColeccionesDAO {
         }
     }
 
+    /**
+     * Returns an ArrayList with every instance of collection inside the Database
+     * @return listCollections - ArrayList that contains every collection in the Database
+     * @throws DBException - Exception that launchs when problems occurs while connecting to the database or when dealing with the PreparedStatement
+     */
     public static ArrayList<Colecciones> listarColecciones() throws DBException{
         Connection conn = null;
         PreparedStatement pS = null;
@@ -51,11 +62,11 @@ public class ColeccionesDAO {
             rS = pS.executeQuery();
 
             while(rS.next()){
-                listaColecciones.add(new Colecciones(rS.getString(2),rS.getString(3),rS.getInt(4),rS.getInt(5),rS.getString(6),rS.getString(7)));
+                listaColecciones.add(new Colecciones(rS.getInt(1),rS.getString(2),rS.getString(3),rS.getInt(4),rS.getInt(5),rS.getString(6),rS.getString(7)));
             }
             return listaColecciones;
-        } catch (Exception e) {
-            throw new DBException("Error al conectarse con la base de datos");
+        } catch (SQLException e) {
+            throw new DBException("Message: " + e.getMessage() + "\nCode: " + e.getErrorCode());
         }finally {
             if(conn != null){
                 ConfigDB.closeDB(conn);
@@ -63,31 +74,17 @@ public class ColeccionesDAO {
         }
     }
 
-    public static ArrayList<String> listarNombreColecciones() throws DBException{
-        Connection conn = null;
-        PreparedStatement pS = null;
-        String sqlStatement = "SELECT * FROM colecciones";
-        ArrayList<String> listaColecciones = new ArrayList<String>();
-        ResultSet rS = null;
-
-        try{
-            conn = ConfigDB.openDB();
-            pS = conn.prepareStatement(sqlStatement);
-            rS = pS.executeQuery();
-
-            while(rS.next()){
-                listaColecciones.add(rS.getString(2));
-            }
-            return listaColecciones;
-        } catch (Exception e) {
-            throw new DBException("Error al conectarse con labase de datos");
-        }finally {
-            if(conn != null){
-                ConfigDB.closeDB(conn);
-            }
-        }
-    }
-
+    /**
+     * Function that receives the id and the data that the user wants to update and changes it in the DataBase
+     * @param nombre - name of the collection
+     * @param autor - name of the author of the collection
+     * @param totalVolumenes - number of all the volumes released of that collection
+     * @param totalPoseidos - number of all the volumes that the user own of the collection
+     * @param estadoColeccion - state of the collection regarding if the user still collects it
+     * @param estadoublicacion - state of the collection regarding if it is still being published
+     * @param id - numeric id of the collection
+     * @throws DBException - Exception that launchs when problems occurs while connecting to the database or when dealing with the PreparedStatement
+     */
     public static void editarColeccion(String nombre, String autor, int totalVolumenes, int totalPoseidos, String estadoColeccion, String estadoublicacion, int id) throws DBException{
         Connection conn = null;
         PreparedStatement pS = null;
@@ -105,7 +102,7 @@ public class ColeccionesDAO {
             pS.setInt(7, id);
             pS.execute();
         }catch (SQLException e) {
-            throw new DBException("Error al ejecutar comando de sql");
+            throw new DBException("Message: " + e.getMessage() + "\nCode: " + e.getErrorCode());
         }finally {
             if(conn != null){
                 ConfigDB.closeDB(conn);
@@ -113,6 +110,11 @@ public class ColeccionesDAO {
         }
     }
 
+    /**
+     * Function that deletes a collection from the Database
+     * @param id - numeric id of the collectionto delete
+     * @throws DBException - Exception that launchs when problems occurs while connecting to the database or when dealing with the PreparedStatement
+     */
     public static void eliminarColeccion(int id) throws DBException {
         Connection conn = null;
         PreparedStatement pS = null;
@@ -124,7 +126,7 @@ public class ColeccionesDAO {
             pS.setInt(1,id);
             pS.execute();
         } catch (SQLException e) {
-            throw new DBException("Error alejecutar orden sql");
+            throw new DBException("Message: " + e.getMessage() + "\nCode: " + e.getErrorCode());
         }finally {
             if(conn != null){
                 ConfigDB.closeDB(conn);
@@ -132,26 +134,12 @@ public class ColeccionesDAO {
         }
     }
 
-    public static int obtenerId(String nombre) throws DBException{
-        Connection conn = null;
-        PreparedStatement pS = null;
-        String sqlStatement = "SELECT id FROM colecciones WHERE nombre = ?";
-        ResultSet rS = null;
-        try{
-            conn = ConfigDB.openDB();
-            pS = conn.prepareStatement(sqlStatement);
-            pS.setString(1,nombre);
-            rS = pS.executeQuery();
-            while(rS.next()){
-                return rS.getInt(1);
-            }
-        } catch (SQLException e) {
-            throw new DBException("Error al ejecutar orden sql");
-        }
-
-        return 0;
-    }
-
+    /**
+     * Function that gets a collection from its id
+     * @param id - Numeric Identifier of the collection
+     * @return col - Collection that has the id as its identifier
+     * @throws DBException - Exception that launchs when problems occurs while connecting to the database or when dealing with the PreparedStatement
+     */
     public static Colecciones obtenerColeccion(int id) throws DBException{
         Connection conn = null;
         PreparedStatement ps = null;
@@ -165,34 +153,16 @@ public class ColeccionesDAO {
             rs = ps.executeQuery();
             Colecciones col = null;
             while (rs.next()){
-                col = new Colecciones(rs.getString(2),rs.getString(3),rs.getInt(4),rs.getInt(5),rs.getString(6),rs.getString(7));
+                col = new Colecciones(rs.getInt(1),rs.getString(2),rs.getString(3),rs.getInt(4),rs.getInt(5),rs.getString(6),rs.getString(7));
             }
             return col;
-        } catch (DBException | SQLException e) {
-            throw new DBException(e.getMessage());
+        } catch (SQLException e) {
+            throw new DBException("Message: " + e.getMessage() + "\nCode: " + e.getErrorCode());
         } finally {
             if(conn != null){
                 ConfigDB.closeDB(conn);
             }
         }
 
-    }
-
-    public static void incrementOwnedBooks(int id) throws DBException{
-        Connection conn = null;
-        PreparedStatement pS = null;
-        String sqlStatement = "UPDATE colecciones SET totalposeidos = totalposeidos + 1 WHERE id = ?";
-        try{
-            conn = ConfigDB.openDB();
-            pS = conn.prepareStatement(sqlStatement);
-            pS.setInt(1,id);
-            pS.execute();
-        } catch (SQLException e) {
-            throw new DBException(e.getMessage());
-        }finally {
-            if(conn != null){
-                ConfigDB.closeDB(conn);
-            }
-        }
     }
 }

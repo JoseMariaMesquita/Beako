@@ -2,6 +2,7 @@ package view;
 
 import dao.ColeccionesDAO;
 import dao.LibroDAO;
+import entity.Colecciones;
 import entity.Libro;
 import exceptions.DBException;
 
@@ -10,6 +11,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Class which object is a GUI that allows the user to modify the data of a book
+ */
 public class EditarLibro extends JFrame {
     //Extras
     private VentanaPrincipal origen;
@@ -35,7 +39,8 @@ public class EditarLibro extends JFrame {
 
     //JComboBox
     private JComboBox<String> cbEstadoLibro = new JComboBox<String>(new String[]{"stopped", "finished", "onreading"});
-    private JComboBox<String> cbColeccion = new JComboBox<String>(ColeccionesDAO.listarNombreColecciones().toArray(new String[ColeccionesDAO.listarNombreColecciones().size()]));
+    private JComboBox<Colecciones> cbColeccion = new JComboBox<Colecciones>(ColeccionesDAO.listarColecciones()
+            .toArray(new Colecciones[ColeccionesDAO.listarColecciones().size()]));
 
     //JPanel
     private JPanel pTitulo = new JPanel(new GridLayout(1,1,10,10));
@@ -48,27 +53,7 @@ public class EditarLibro extends JFrame {
     private JPanel pBotones = new JPanel(new GridLayout(1,2,10,10));
 
     /**
-     * Test Main Class
-     */
-    public static void main(){
-
-        try {
-            EditarLibro e = new EditarLibro();
-        } catch (DBException ex) {
-            System.out.println("Error");
-        }
-    }
-
-    /**
-     * Constructor of the EdditarLibro class without VentanaPrincipal mainly for tests
-     * @throws DBException
-     */
-    public EditarLibro() throws DBException{
-        inicializar();
-    }
-
-    /**
-     * Constructor of the EditarLibro class
+     * Constructor of the class
      * @param origen - Main GUI of the app
      * @throws DBException - Error related to anything that has to do with the DB
      */
@@ -136,10 +121,6 @@ public class EditarLibro extends JFrame {
         this.setResizable(false);
         this.setVisible(true);
 
-        /*
-        Insertar id, libro existe, rellenar casillas con datos del libro
-        , usuario modifica
-         */
         tfIdLibro.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -163,20 +144,22 @@ public class EditarLibro extends JFrame {
                             @Override
                             public void actionPerformed(ActionEvent actionEvent) {
                                 try {
+                                    Colecciones coleccion = (Colecciones) cbColeccion.getSelectedItem();
                                     LibroDAO.editarLibros(Integer.parseInt(tfIdLibro.getText()), Integer.parseInt(tfNumVolumen.getText())
                                             ,tfEditorial.getText(),tfLenguaje.getText(),cbEstadoLibro.getSelectedItem().toString()
-                                            ,ColeccionesDAO.obtenerId(cbColeccion.getSelectedItem().toString()));
+                                            ,coleccion.getIdCollection());
+                                    dispose();
                                 } catch (DBException e) {
-                                    JOptionPane.showMessageDialog(EditarLibro.this,"Error al editar libro","Error"
-                                            ,JOptionPane.ERROR_MESSAGE);
+                                    JOptionPane.showMessageDialog(EditarLibro.this,"Message: " + e.getMessage()
+                                            ,"BeakoBeta: Error",JOptionPane.ERROR_MESSAGE);
                                 }
                             }
                         });
 
                     }
                 } catch (DBException e) {
-                    JOptionPane.showMessageDialog(EditarLibro.this,"Error durante la busqueda de libro por id"
-                            ,"Error",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(EditarLibro.this,"Message: " + e.getMessage()
+                            ,"BeakoBeta: Error",JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
