@@ -50,4 +50,5 @@ public class CustomButton extends JButton {
         this.setHorizontalAlignment(SwingConstants.LEFT);
         this.setIconTextGap(10);
     }
+
 }
