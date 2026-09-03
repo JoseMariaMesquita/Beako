@@ -8,6 +8,7 @@ import entity.Libro;
 import exceptions.DBException;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -23,7 +24,7 @@ public class CrearLibro extends JDialog {
     //Constants
     private final Font FONT_STATS_NAME = new Font("SansSerif",Font.PLAIN,14);
     private final Font FONT_STATS_VALUE = new Font("SansSerif",Font.BOLD,22);
-    private final Font FONT_TITLE = new  Font("SansSerif",Font.BOLD,24);
+    private final Font FONT_TITLE = new  Font("Georgia",Font.BOLD,24);
 
     private final Color COLOR_STATS_NAME = new Color(90, 90, 100);
     private final Color COLOR_STATS_VALUE = new Color(30, 30, 40);
@@ -42,12 +43,12 @@ public class CrearLibro extends JDialog {
     private CustomButton btnCancel = new CustomButton("Cancel");
 
     //Jlabels
-    private JLabel lbTitulo = new JLabel("Create Book",JLabel.CENTER);
-    private JLabel lbNumVolumen = new JLabel("Volume Number: ",JLabel.CENTER);
-    private JLabel lbEditorial = new JLabel("Editorial: ",JLabel.CENTER);
-    private JLabel lbLenguaje = new JLabel("Language: ",JLabel.CENTER);
-    private JLabel lbEstadoLibro = new JLabel("Book State: ",JLabel.CENTER);
-    private JLabel lbColeccion = new JLabel("Collection: ",JLabel.CENTER);
+    private JLabel lbTitulo = new JLabel("Create Book");
+    private JLabel lbNumVolumen = new JLabel("VOLUME NUMBER");
+    private JLabel lbEditorial = new JLabel("EDITORIAL");
+    private JLabel lbLenguaje = new JLabel("LANGUAGE");
+    private JLabel lbEstadoLibro = new JLabel("BOOK STATE");
+    private JLabel lbColeccion = new JLabel("COLLECTION");
 
     //JTextFields
     private JTextField tfNumVolumen = new JTextField(20);
@@ -77,6 +78,7 @@ public class CrearLibro extends JDialog {
      * @throws DBException - Exception related to the DataBase
      */
     public CrearLibro(VentanaPrincipal origen) throws DBException {
+        super(origen,true);
         this.origen = origen;
         innit();
     }
@@ -92,7 +94,7 @@ public class CrearLibro extends JDialog {
         this.getContentPane().setBackground(MAIN_BG);
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setLayout(new GridBagLayout());
-        this.setLocationRelativeTo(null);
+        this.setLocationRelativeTo(this.origen);
 
         GridBagConstraints gbcBase = new GridBagConstraints();
         gbcBase.insets = new Insets(7,10,7,10);
@@ -128,8 +130,10 @@ public class CrearLibro extends JDialog {
         this.pNumeroVolumen.add(lbNumVolumen,gbcData);
         gbcData.gridy = 1;
         gbcData.fill = GridBagConstraints.HORIZONTAL;
-        tfNumVolumen.setFont(new Font("SansSerif",Font.PLAIN,18));
-        tfNumVolumen.setBorder(new LineBorder(new Color(204, 159, 173),2));
+        tfNumVolumen.setFont(new Font("SansSerif",Font.PLAIN,15));
+        tfNumVolumen.setBorder(new EmptyBorder(1,1,1,1));
+        tfNumVolumen.setForeground(Color.GRAY);
+        tfNumVolumen.setBackground(MAIN_BG);
         this.pNumeroVolumen.add(tfNumVolumen,gbcData);
         this.pNumeroVolumen.setBackground(MAIN_BG);
         this.add(pNumeroVolumen,gbcBase);
@@ -141,8 +145,10 @@ public class CrearLibro extends JDialog {
         this.pEditorial.add(lbEditorial,gbcData);
         gbcData.gridy = 1;
         gbcData.fill = GridBagConstraints.HORIZONTAL;
-        tfEditorial.setFont(new Font("SansSerif",Font.PLAIN,18));
-        tfEditorial.setBorder(new LineBorder(new Color(204, 159, 173),2));
+        tfEditorial.setFont(new Font("SansSerif",Font.PLAIN,15));
+        tfEditorial.setBorder(new EmptyBorder(1,1,1,1));
+        tfEditorial.setForeground(Color.GRAY);
+        tfEditorial.setBackground(MAIN_BG);
         this.pEditorial.add(tfEditorial,gbcData);
         this.pEditorial.setBackground(MAIN_BG);
         this.add(pEditorial,gbcBase);
@@ -154,8 +160,10 @@ public class CrearLibro extends JDialog {
         this.pLenguaje.add(lbLenguaje,gbcData);
         gbcData.gridy = 1;
         gbcData.fill = GridBagConstraints.HORIZONTAL;
-        tfLenguaje.setFont(new Font("SansSerif",Font.PLAIN,18));
-        tfLenguaje.setBorder(new LineBorder(new Color(204, 159, 173),2));
+        tfLenguaje.setFont(new Font("SansSerif",Font.PLAIN,15));
+        tfLenguaje.setBorder(new EmptyBorder(1,1,1,1));
+        tfLenguaje.setForeground(Color.GRAY);
+        tfLenguaje.setBackground(MAIN_BG);
         this.pLenguaje.add(tfLenguaje,gbcData);
         this.pLenguaje.setBackground(MAIN_BG);
         this.add(pLenguaje,gbcBase);
@@ -167,8 +175,9 @@ public class CrearLibro extends JDialog {
         this.pEstadoLibro.add(lbEstadoLibro,gbcData);
         gbcData.gridy = 1;
         gbcData.fill = GridBagConstraints.HORIZONTAL;
-        cbEstadoLibro.setFont(new Font("SansSerif",Font.PLAIN,18));
-        cbEstadoLibro.setBorder(new LineBorder(new Color(204, 159, 173),2));
+        cbEstadoLibro.setFont(new Font("SansSerif",Font.PLAIN,15));
+        cbEstadoLibro.setBorder(new EmptyBorder(1,1,1,1));
+        cbEstadoLibro.setForeground(Color.GRAY);
         this.pEstadoLibro.add(cbEstadoLibro,gbcData);
         this.pEstadoLibro.setBackground(MAIN_BG);
         this.add(pEstadoLibro,gbcBase);
@@ -181,7 +190,8 @@ public class CrearLibro extends JDialog {
         gbcData.gridy = 1;
         gbcData.fill = GridBagConstraints.HORIZONTAL;
         cbColeccion.setFont(new Font("SansSerif",Font.PLAIN,18));
-        cbColeccion.setBorder(new LineBorder(new Color(204, 159, 173),2));
+        cbColeccion.setBorder(new EmptyBorder(1,1,1,1));
+        cbColeccion.setForeground(Color.GRAY);
         this.pColeccion.add(cbColeccion,gbcData);
         this.pColeccion.setBackground(MAIN_BG);
         this.add(pColeccion,gbcBase);
@@ -203,7 +213,6 @@ public class CrearLibro extends JDialog {
 
         this.setSize(521,556);
         this.setResizable(false);
-        this.setVisible(true);
 
         btnCreate.addActionListener(new ActionListener() {
             @Override
@@ -227,6 +236,12 @@ public class CrearLibro extends JDialog {
                 CrearLibro.this.dispose();
             }
         });
+
+        this.setVisible(true);
+
+
+
+
     }
 
 

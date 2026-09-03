@@ -5,6 +5,7 @@ import Utils.ImageResizer;
 import dao.ColeccionesDAO;
 import entity.Colecciones;
 import exceptions.DBException;
+import exceptions.NoBookException;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
@@ -234,6 +235,8 @@ public class VentanaPrincipal extends JFrame {
                     DeleteBook dB = new DeleteBook(VentanaPrincipal.this);
                 } catch (DBException e) {
                     JOptionPane.showMessageDialog(VentanaPrincipal.this, "Message: " + e.getMessage(), "BeakoBeta: Error", JOptionPane.ERROR_MESSAGE);
+                } catch (NoBookException b){
+                    JOptionPane.showMessageDialog(VentanaPrincipal.this,"Message: " + b.getMessage(), "BeakoBeta: Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -283,7 +286,7 @@ public class VentanaPrincipal extends JFrame {
      * @throws DBException - Exception related to the Database
      */
     public JTable collectionTable() throws DBException {
-        String[] column = {"ID", "Title", "Autor", "Total de Volumes", "Owned", "Collection Status", "Publication Status"};
+        String[] column = {"ID", "Title", "Author", "Total Volumes", "Owned", "Collection Status", "Publication Status"};
 
         DefaultTableModel model = new DefaultTableModel(column, 0) {
             @Override

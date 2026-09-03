@@ -9,7 +9,9 @@ import exceptions.DBException;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import java.awt.*;
+import java.util.List;
 
 /**
  * Class which object is a GUI that portraits then info of the selected collection
@@ -240,34 +242,31 @@ public class CollectionContents extends JDialog {
      * @throws DBException - Exception related to the DataBase
      */
     public JTable bookTable(int id) throws DBException {
-        final int POSITION_ID = 0;
-        final int POSITION_VOL = 1;
-        final int POSITION_EDITORIAL = 2;
-        final int POSITION_LANGUAGE = 3;
-        final int POSITION_STATUS = 4;
-        final int POSITION_COLLECTION = 5;
 
         String[] column = {"ID","Vol #","Editorial","Language","Status","Collection"};
-        Object[][] data = new Object[LibroDAO.listBooksByCollection(id).size()][6];
-        for (int i = 0; i < data.length; i++) {
-            Libro[] listadoDeColecciones = LibroDAO.listBooksByCollection(id).toArray(new Libro[LibroDAO.listBooksByCollection(id).size()]);
-            data[i][POSITION_ID] = listadoDeColecciones[i].getIdBook();
-            data[i][POSITION_VOL] = listadoDeColecciones[i].getNumeroVolumen();
-            data[i][POSITION_EDITORIAL] = listadoDeColecciones[i].getEditorial();
-            data[i][POSITION_LANGUAGE] = listadoDeColecciones[i].getLenguaje();
-            data[i][POSITION_STATUS] = listadoDeColecciones[i].getEstadoLibro();
-            data[i][POSITION_COLLECTION] = listadoDeColecciones[i].getColeccion();
-
-
-        }
-
-        DefaultTableModel model = new DefaultTableModel(data,column){
+        DefaultTableModel model = new DefaultTableModel(column,0){
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
+
+        List<Libro> books = LibroDAO.listBooksByCollection(id);
+        for(Libro b : books){
+
+            model.addRow(new Object[]{
+                    b.getIdBook(),
+                    b.getNumeroVolumen(),
+                    b.getEditorial(),
+                    b.getLenguaje(),
+                    b.getEstadoLibro(),
+                    b.getColeccion()
+            });
+        }
+
         JTable tblBooks = new JTable();
+        JTableHeader header = tblBooks.getTableHeader();
+        header.setBackground(new Color(246, 212, 224));
         tblBooks.setModel(model);
         tblBooks.setCellSelectionEnabled(false);
         tblBooks.setRowSelectionAllowed(true);
