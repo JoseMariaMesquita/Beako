@@ -66,29 +66,31 @@ CREATE DATABASE IF NOT EXISTS beakobeta
 
 USE beakobeta;
 
-CREATE TABLE colecciones (
+-- Tabla: colecciones
+CREATE TABLE collections (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(255) NOT NULL,
-    autor VARCHAR(255) NOT NULL,
-    totalvolumenes INT NOT NULL DEFAULT 0,
-    totalposeidos INT NOT NULL DEFAULT 0,
-    estadocoleccion ENUM('stopped', 'finished', 'onreading') NOT NULL,
-    estadopublicacion ENUM('cancelado', 'terminado', 'hiatus', 'ongoing') NOT NULL
+    title VARCHAR(255) NOT NULL,
+    author VARCHAR(255) NOT NULL,
+    totalvolumes INT NOT NULL DEFAULT 0,
+    owned INT NOT NULL DEFAULT 0,
+    collectionstate ENUM('stopped', 'finished', 'onreading') NOT NULL,
+    publishingstate ENUM('cancelled', 'finished', 'hiatus', 'ongoing') NOT NULL
 );
 
-CREATE TABLE libros (
+-- Tabla: libros
+CREATE TABLE books (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    numerovolumen INT NOT NULL,
+    volumenumber INT NOT NULL,
     editorial VARCHAR(255) NOT NULL,
-    lenguage VARCHAR(3) NOT NULL,
-    estadolibro ENUM('stopped', 'finished', 'onreading') NOT NULL,
-    coleccion INT NOT NULL,
+    language VARCHAR(3) NOT NULL,
+    bookstate ENUM('stopped', 'finished', 'onreading') NOT NULL,
+    collection INT NOT NULL,
     CONSTRAINT fk_libros_coleccion
-        FOREIGN KEY (coleccion) REFERENCES colecciones(id)
+        FOREIGN KEY (collection) REFERENCES collections(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
     CONSTRAINT chk_lenguage_mayusculas
-        CHECK (lenguage = BINARY UPPER(lenguage))
+        CHECK (language = BINARY UPPER(language))
 );
 ```
 
@@ -179,6 +181,6 @@ Status values used by the app:
 | Field | Possible values |
 |-------|-----------------|
 | Collection status | `stopped`, `finished`, `onreading` |
-| Publication status | `cancelado`, `terminado`, `hiatus`, `ongoing` |
+| Publication status | `cancelled`, `finished`, `hiatus`, `ongoing` |
 | Book (volume) status | `stopped`, `finished`, `onreading` |
 
