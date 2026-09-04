@@ -57,7 +57,7 @@ public class CrearColeccion extends JDialog {
 
     //JComboBox
     private JComboBox<String> cbEstadoCol = new JComboBox<String>(new String[]{"stopped", "finished", "onreading"});
-    private JComboBox<String> cbEstadoPubli = new JComboBox<String>(new String[]{"cancelado", "terminado", "hiatus", "ongoing"});
+    private JComboBox<String> cbEstadoPubli = new JComboBox<String>(new String[]{"cancelled", "finished", "hiatus", "ongoing"});
 
     //JPanel
     private JPanel pTituloPestaña = new JPanel(new GridLayout(1,1,10,10));
@@ -66,7 +66,7 @@ public class CrearColeccion extends JDialog {
     private JPanel pTotalVolumen= new JPanel(new GridBagLayout());
     private JPanel pEstadoCol = new JPanel(new GridBagLayout());
     private JPanel pEstadoPubli = new JPanel(new GridBagLayout());
-    private JPanel pBotones = new JPanel(new GridLayout(1,2,10,10));
+    private JPanel pBotones = new JPanel(new GridBagLayout());
 
     //GridBagConstraints Data
     GridBagConstraints gbcData = new GridBagConstraints();
@@ -93,6 +93,7 @@ public class CrearColeccion extends JDialog {
         this.setLayout(new GridBagLayout());
         this.getContentPane().setBackground(MAIN_BG);
         this.setLocationRelativeTo(null);
+        this.setResizable(false);
 
         GridBagConstraints gbcBase = new GridBagConstraints();
         gbcBase.insets = new Insets(7,10,7,10);

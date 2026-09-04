@@ -20,7 +20,7 @@ public class LibroDAO {
 
         Connection conn = null;
         PreparedStatement pS = null;
-        String sqlStatement = "INSERT INTO libros(numeroVolumen, editorial, lenguage, estadoLibro, coleccion) VALUES(?,?,?,?,?)";
+        String sqlStatement = "INSERT INTO books(volumenumber, editorial, language, bookstate, collection) VALUES(?,?,?,?,?)";
 
 
         try{
@@ -56,7 +56,7 @@ public class LibroDAO {
         PreparedStatement pS = null;
         ResultSet rS =  null;
         Libro l = null;
-        String sqlStatement = "SELECT * FROM libros WHERE id = ?";
+        String sqlStatement = "SELECT * FROM books WHERE id = ?";
 
         try{
             conn = ConfigDB.openDB();
@@ -85,7 +85,7 @@ public class LibroDAO {
     public static ArrayList<Libro> listBooksByCollection(int collectionId) throws DBException{
         Connection conn = null;
         PreparedStatement pS = null;
-        String sqlStatement = "SELECT * FROM libros WHERE coleccion = ?";
+        String sqlStatement = "SELECT * FROM books WHERE collection = ?";
         ResultSet rS = null;
         ArrayList<Libro> booksOfCollection = new ArrayList<Libro>();
 
@@ -120,7 +120,7 @@ public class LibroDAO {
     public static void editarLibros(int id, int numeroVolumen, String editorial, String lenguage, String estadoLibro, int coleccion) throws  DBException{
         Connection conn = null;
         PreparedStatement pS = null;
-        String sqlStatement = "UPDATE libros SET numerovolumen = ?, editorial = ?, lenguage = ?, estadolibro = ?, coleccion = ? WHERE id = ?";
+        String sqlStatement = "UPDATE books SET volumenumber = ?, editorial = ?, language = ?, bookstate = ?, collection = ? WHERE id = ?";
 
         try{
             conn = ConfigDB.openDB();
@@ -150,7 +150,7 @@ public class LibroDAO {
     public static void eliminarLibro(int id) throws DBException{
         Connection conn = null;
         PreparedStatement pS = null;
-        String sqlStatement = "DELETE FROM libros WHERE id = ?";
+        String sqlStatement = "DELETE FROM books WHERE id = ?";
 
                 try{
                     conn = ConfigDB.openDB();

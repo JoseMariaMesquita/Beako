@@ -25,21 +25,8 @@ public class DeleteBook extends JDialog {
     private VentanaPrincipal origin;
 
     //Constants
-    private final Font FONT_STATS_NAME = new Font("SansSerif",Font.PLAIN,14);
-    private final Font FONT_STATS_VALUE = new Font("SansSerif",Font.BOLD,22);
     private final Font FONT_TITLE = new  Font("Georgia",Font.BOLD,24);
-
-    private final Color COLOR_STATS_NAME = new Color(90, 90, 100);
-    private final Color COLOR_STATS_VALUE = new Color(30, 30, 40);
     private final Color COLOR_COLLECTION_TITLE = new Color(200, 30, 100);
-    private final Color COLOR_COLLECTION_TITLE_BLOCK = new Color(115, 15, 55);
-
-    private final Color STAT_CARDS_BG = new Color(253, 235, 240);
-    private final Color STAT_CARDS_BORDER = new Color(240, 200, 215);
-
-    private final Color DATA_BG = new Color(255, 255, 255);
-    private final Color DATA_BORDER = new Color(139, 126, 174, 174);
-
     private final Color MAIN_BG = new Color(248, 238, 240);
 
     //JLabel
@@ -87,6 +74,7 @@ public class DeleteBook extends JDialog {
         this.getContentPane().setBackground(MAIN_BG);
         this.setSize(new Dimension(390,301));
         this.setLayout(new GridBagLayout());
+        this.setResizable(false);
 
         GridBagConstraints gbcBase = new GridBagConstraints();
         gbcBase.insets = new Insets(7,10,7,10);

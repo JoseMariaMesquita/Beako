@@ -95,6 +95,7 @@ public class CrearLibro extends JDialog {
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setLayout(new GridBagLayout());
         this.setLocationRelativeTo(this.origen);
+        this.setResizable(false);
 
         GridBagConstraints gbcBase = new GridBagConstraints();
         gbcBase.insets = new Insets(7,10,7,10);

@@ -13,8 +13,9 @@ import javax.swing.*;
 public class Main {
     static void main() {
         //ToDo 2: Make it all one same language for better understanding of the code and to improve the GUI visually
-        //ToDo 5: Improve the CRUD GUIs
         //ToDo 6: Do some bug fixing and bug searching
+        //ToDo 7: Create a constants class
+        //ToDo 8: Add a .config for the Connection to the DataBase
         try {
             VentanaPrincipal vp = new VentanaPrincipal();
         } catch (DBException e) {

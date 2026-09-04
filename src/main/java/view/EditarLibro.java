@@ -96,6 +96,7 @@ public class EditarLibro extends JDialog {
         this.setLayout(new GridBagLayout());
         this.getContentPane().setBackground(MAIN_BG);
         this.setLocationRelativeTo(this.origen);
+        this.setResizable(false);
 
         GridBagConstraints gbcBase = new GridBagConstraints();
         gbcBase.insets = new Insets(7,10,7,10);

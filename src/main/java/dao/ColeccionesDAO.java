@@ -22,7 +22,7 @@ public class ColeccionesDAO {
 
         Connection conn = null;
         PreparedStatement pS = null;
-        String sqlStatement = "INSERT INTO colecciones(nombre, autor, totalvolumenes, totalposeidos, estadocoleccion, estadopublicacion) VALUES(?,?,?,?,?,?)";
+        String sqlStatement = "INSERT INTO collections(title, author, totalvolumes, owned, collectionstate, publishingstate) VALUES(?,?,?,?,?,?)";
 
         try{
 
@@ -52,7 +52,7 @@ public class ColeccionesDAO {
     public static ArrayList<Colecciones> listarColecciones() throws DBException{
         Connection conn = null;
         PreparedStatement pS = null;
-        String sqlStatement = "SELECT * FROM colecciones";
+        String sqlStatement = "SELECT * FROM collections";
         ArrayList<Colecciones> listaColecciones = new ArrayList<Colecciones>();
         ResultSet rS = null;
 
@@ -88,7 +88,7 @@ public class ColeccionesDAO {
     public static void editarColeccion(String nombre, String autor, int totalVolumenes, int totalPoseidos, String estadoColeccion, String estadoublicacion, int id) throws DBException{
         Connection conn = null;
         PreparedStatement pS = null;
-        String sqlStatement = "UPDATE colecciones SET nombre = ?, autor = ?, totalvolumenes = ?, totalposeidos = ?, estadocoleccion = ?, estadopublicacion = ? WHERE id = ?";
+        String sqlStatement = "UPDATE collections SET title = ?, author = ?, totalvolumes = ?, owned = ?, collectionstate = ?, publishingstate = ? WHERE id = ?";
 
         try {
             conn = ConfigDB.openDB();
@@ -118,7 +118,7 @@ public class ColeccionesDAO {
     public static void eliminarColeccion(int id) throws DBException {
         Connection conn = null;
         PreparedStatement pS = null;
-        String sqlStatement = "DELETE FROM colecciones WHERE id = ?";
+        String sqlStatement = "DELETE FROM collections WHERE id = ?";
 
         try{
             conn = ConfigDB.openDB();
@@ -143,7 +143,7 @@ public class ColeccionesDAO {
     public static Colecciones obtenerColeccion(int id) throws DBException{
         Connection conn = null;
         PreparedStatement ps = null;
-        String sqlStatement = "SELECT * FROM colecciones WHERE id = ?";
+        String sqlStatement = "SELECT * FROM collections WHERE id = ?";
         ResultSet rs = null;
 
         try {

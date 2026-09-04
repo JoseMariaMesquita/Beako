@@ -46,13 +46,13 @@ public class VentanaPrincipal extends JFrame {
     private final ImageIcon imgDeleteCollection = new ImageIcon("src\\main\\resources\\icons\\deleteCollection.png");
 
     //JButton
-    private CustomButton btnCreateBook = new CustomButton("Crear Libro", ImageResizer.resizeImages(imgCreateBook));
-    private CustomButton btnEditBook = new CustomButton("Editar Libro", ImageResizer.resizeImages(imgEditBook));
-    private CustomButton btnDeleteBook = new CustomButton("Eliminar Libro", ImageResizer.resizeImages(imgDeleteBook));
+    private CustomButton btnCreateBook = new CustomButton("Create Book", ImageResizer.resizeImages(imgCreateBook));
+    private CustomButton btnEditBook = new CustomButton("Edit Book", ImageResizer.resizeImages(imgEditBook));
+    private CustomButton btnDeleteBook = new CustomButton("Delete Book", ImageResizer.resizeImages(imgDeleteBook));
 
-    private CustomButton btnCreateCollection = new CustomButton("Crear Coleccion", ImageResizer.resizeImages(imgCreateCollection));
-    private CustomButton btnEditCollection = new CustomButton("Editar Coleccion", ImageResizer.resizeImages(imgEditCollection));
-    private CustomButton btnDeleteCollection = new CustomButton("Eliminar Colleccion", ImageResizer.resizeImages(imgDeleteCollection));
+    private CustomButton btnCreateCollection = new CustomButton("Create Collection", ImageResizer.resizeImages(imgCreateCollection));
+    private CustomButton btnEditCollection = new CustomButton("Edit Collection", ImageResizer.resizeImages(imgEditCollection));
+    private CustomButton btnDeleteCollection = new CustomButton("Delete Collection", ImageResizer.resizeImages(imgDeleteCollection));
 
     //JPanels
     private JPanel pControlPanel = new JPanel(new GridBagLayout());
@@ -88,6 +88,7 @@ public class VentanaPrincipal extends JFrame {
         this.setLayout(new GridBagLayout());
         this.getContentPane().setBackground(MAIN_BG);
         this.setIconImage(ImageResizer.resizeImages(imgBeako).getImage());
+        this.setResizable(false);
 
         //Frame GridBagConstrain
         GridBagConstraints gbcFrame = new GridBagConstraints();
